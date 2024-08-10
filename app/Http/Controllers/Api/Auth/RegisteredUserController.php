@@ -139,6 +139,6 @@ class RegisteredUserController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
             ]
-        ]);
+        ], Response::HTTP_CREATED);
     }
 }
