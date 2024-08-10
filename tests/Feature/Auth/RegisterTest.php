@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Tests\TestCase;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 
 class RegisterTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
     /**
      * A basic feature test example.
      */
