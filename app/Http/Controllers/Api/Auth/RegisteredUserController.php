@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
@@ -128,6 +131,13 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+        try {
+            Mail::to($user->email)->queue(new WelcomeEmail($user));
+            Log::info('Email queued successfully for user: ' . $user->email);
+        } catch(\Exception $e) {
+            Log::error('Failed to send email to user: ' . $user->email . '. Error: ' . $e->getMessage());
+        }
+
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

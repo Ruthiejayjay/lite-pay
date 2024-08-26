@@ -46,16 +46,8 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "User Login Successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
                     "200": {
-                        "description": "Login Successfull",
+                        "description": "Login Successfully",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -79,6 +71,97 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/auth/generate-verification-url": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Generate email verification URL",
+                "description": "Generates a temporary signed email verification URL for a given user.",
+                "operationId": "generateVerificationUrl",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "description": "User ID (UUID)",
+                                        "type": "string",
+                                        "example": "406fdaa9-6927-47ec-aed6-d6d371422916"
+                                    },
+                                    "email": {
+                                        "description": "User email address",
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully generated verification URL.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "url": {
+                                            "type": "string",
+                                            "example": "https://your-domain.com/api/email/verify/1/6b8b4567"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user data provided.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid user data provided."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/register": {
