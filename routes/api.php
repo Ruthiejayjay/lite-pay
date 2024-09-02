@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
+use App\Http\Controllers\Api\General\AccountsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,10 @@ Route::prefix('/v1')->group(function () {
             ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
     });
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->middleware('auth:sanctum');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+        Route::resource('accounts', AccountsController::class);
+    });
 });
