@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use OpenApi\Annotations as OA;
+
 /**
  * @OA\Info(
  *     version="1.0.0",
@@ -16,7 +18,20 @@ namespace App\Http\Controllers;
  *     )
  * )
  */
-abstract class Controller
+
+/**
+ * @OA\Info(title="Lite Pay API", version="1.0.0"),
+ * @OA\SecurityScheme(
+ *    securityScheme="sanctum",
+ *    in="header",
+ *    name="bearer",
+ *    type="http",
+ *    scheme="bearer",
+ *    bearerFormat="JWT",
+ *    description="Enter your Bearer token in the format **Bearer {token}**"
+ * ),
+ */
+class Controller // Changed from abstract to concrete class
 {
     //
 }
