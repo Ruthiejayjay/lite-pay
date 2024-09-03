@@ -15,6 +15,8 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->uuid('id');
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
+            $table->string('account_holder_name');
+            $table->bigInteger('account_number');
             $table->enum('account_type', ['savings', 'checking']);
             $table->foreignUuid('currency_id')->constrained('currencies')->onDelete('restrict');
             $table->decimal('balance', 15, 2)->default(0);

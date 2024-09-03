@@ -104,6 +104,8 @@ class AccountsController extends Controller
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="string", format="uuid", example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"),
      *                 @OA\Property(property="user_id", type="string", format="uuid", example="e43e0d0d-d7c4-4a82-8c55-36c947d11692"),
+     *                 @OA\Property(property="account_holder_name", type="string", example="John Doe"),
+     *                 @OA\Property(property="account_number", type="number", format="float", example=1234567890),
      *                 @OA\Property(property="account_type", type="string", example="savings"),
      *                 @OA\Property(property="balance", type="number", format="float", example=1000.00),
      *                 @OA\Property(property="total_deposits", type="number", format="float", example=0.00),
@@ -128,8 +130,10 @@ class AccountsController extends Controller
     public function store(StoreAccountRequest $request)
     {
         $validated = $request->validated();
+        $user = Auth::user();
 
         $currency = Currency::where('currency_code', $validated['currency_code'])->first();
+        $accountNumber = mt_rand(1000000000, 9999999999);
 
         if (!$currency) {
             return response()->json([
@@ -140,7 +144,9 @@ class AccountsController extends Controller
         }
 
         $account = Account::create([
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
+            'account_holder_name' => $user->name,
+            'account_number' => $accountNumber,
             'account_type' => $validated['account_type'],
             'balance' => $validated['balance'],
             'total_deposits' => $validated['total_deposits'],

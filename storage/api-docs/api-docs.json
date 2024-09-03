@@ -462,6 +462,15 @@
                                                     "format": "uuid",
                                                     "example": "e43e0d0d-d7c4-4a82-8c55-36c947d11692"
                                                 },
+                                                "account_holder_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "account_number": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 1234567890
+                                                },
                                                 "account_type": {
                                                     "type": "string",
                                                     "example": "savings"

@@ -28,5 +28,7 @@ class Account extends Model
         'total_withdrawal',
         'user_id',
         'currency_id',
+        'account_holder_name',
+        'account_number'
     ];
 }
