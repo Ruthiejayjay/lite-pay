@@ -382,6 +382,159 @@
                         "sanctum": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create a new account",
+                "operationId": "298d201f4e5d9ce3c4eca322b71062ec",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "account_type",
+                                    "balance",
+                                    "total_deposits",
+                                    "total_withdrawals",
+                                    "currency_code"
+                                ],
+                                "properties": {
+                                    "account_type": {
+                                        "type": "string",
+                                        "example": "savings"
+                                    },
+                                    "balance": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1000
+                                    },
+                                    "total_deposits": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0
+                                    },
+                                    "total_withdrawals": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0
+                                    },
+                                    "currency_code": {
+                                        "type": "string",
+                                        "example": "USD"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Account Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Accounts Created Successfully"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+                                                },
+                                                "user_id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "e43e0d0d-d7c4-4a82-8c55-36c947d11692"
+                                                },
+                                                "account_type": {
+                                                    "type": "string",
+                                                    "example": "savings"
+                                                },
+                                                "balance": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 1000
+                                                },
+                                                "total_deposits": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 0
+                                                },
+                                                "total_withdrawals": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 0
+                                                },
+                                                "currency_id": {
+                                                    "type": "string",
+                                                    "format": "uuid",
+                                                    "example": "aa0e4cba-72fc-41ff-847b-4b1b4d3cd832"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-09-03T12:34:56Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-09-03T12:34:56Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currency not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failure"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Currency not found"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         }
     },
