@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 
-class StoreAccountRequest extends FormRequest
+class UpdateAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,7 @@ class StoreAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'account_type' => ['required', 'in:savings,checking'],
-            'currency_code' => ['required', 'string', 'exists:currencies,currency_code'],
             'balance' => ['numeric', 'min:0'],
-            'total_deposits' => ['numeric', 'min:0'],
-            'total_withdrawals' => ['numeric', 'min:0'],
         ];
     }
 

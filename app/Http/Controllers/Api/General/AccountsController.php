@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\General;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAccountRequest;
+use App\Http\Requests\UpdateAccountRequest;
 use App\Models\Account;
 use App\Models\Currency;
 use Illuminate\Http\Request;
@@ -220,6 +221,85 @@ class AccountsController extends Controller
             'status_code' => Response::HTTP_OK,
             'data' => $account
         ], Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/v1/accounts/{id}",
+     *     summary="Update Account Balance",
+     *     description="Update the balance of an account by adding the provided amount to it. This also updates the total deposits.",
+     *     operationId="updateAccountBalance",
+     *     security={{"sanctum":{}}},
+     *     tags={"Accounts"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the account to update",
+     *         @OA\Schema(type="string", format="uuid")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"balance"},
+     *             @OA\Property(
+     *                 property="balance",
+     *                 type="number",
+     *                 format="float",
+     *                 description="The amount to add to the account balance"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Account Balance Updated Successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Account Balance Updated Successfully"),
+     *             @OA\Property(property="status_code", type="integer", example=200),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="string", format="uuid"),
+     *                 @OA\Property(property="user_id", type="string", format="uuid"),
+     *                 @OA\Property(property="account_type", type="string"),
+     *                 @OA\Property(property="balance", type="number", format="float"),
+     *                 @OA\Property(property="total_deposits", type="number", format="float"),
+     *                 @OA\Property(property="total_withdrawals", type="number", format="float"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Account not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failure"),
+     *             @OA\Property(property="message", type="string", example="Account not Found"),
+     *             @OA\Property(property="status_code", type="integer", example=404)
+     *         )
+     *     )
+     * )
+     */
+    public function update(UpdateAccountRequest $request, $id)
+    {
+        $validated = $request->validated();
+        $account = Account::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
+
+        $amountToAdd = $validated['balance'];
+
+        $account->update([
+            'balance' => $account->balance + $amountToAdd,
+            'total_deposits' => $account->total_deposits + $amountToAdd
+        ]);
+
+        return response()->json([
+            'status' => Status::SUCCESS,
+            'message' => 'Account Balance Updated Successfully',
+            'status_code' => Response::HTTP_OK,
+            'data' => $account
+        ]);
     }
 
     /**
