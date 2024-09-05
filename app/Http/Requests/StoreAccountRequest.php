@@ -28,8 +28,8 @@ class StoreAccountRequest extends FormRequest
             'account_type' => ['required', 'in:savings,checking'],
             'currency_code' => ['required', 'string', 'exists:currencies,currency_code'],
             'balance' => ['numeric', 'min:0'],
-            'total_deposits' => ['numeric', 'min:0'],
-            'total_withdrawals' => ['numeric', 'min:0'],
+            'total_deposits' => ['sometimes','numeric', 'min:0'],
+            'total_withdrawals' => ['sometimes','numeric', 'min:0'],
         ];
     }
 
