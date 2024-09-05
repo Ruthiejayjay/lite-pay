@@ -31,4 +31,9 @@ class Account extends Model
         'account_holder_name',
         'account_number'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
