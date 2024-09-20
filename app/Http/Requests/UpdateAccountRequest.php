@@ -25,7 +25,7 @@ class UpdateAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'balance' => ['numeric', 'min:0'],
+            'balance' => ['required', 'numeric', 'min:0'],
         ];
     }
 

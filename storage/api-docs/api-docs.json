@@ -308,6 +308,15 @@
                                                         "format": "uuid",
                                                         "example": "123e4567-e89b-12d3-a456-426614174000"
                                                     },
+                                                    "account_holder_name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "account_number": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1234567890
+                                                    },
                                                     "account_type": {
                                                         "type": "string",
                                                         "example": "savings"
@@ -869,6 +878,136 @@
                     }
                 ]
             }
+        },
+        "/api/v1/transactions": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get all user transactions",
+                "operationId": "9ddcf77080db4d93cc2fe6a109093486",
+                "responses": {
+                    "200": {
+                        "description": "Transactions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Transactions Retrieved Successfully"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                    },
+                                                    "sender_account_id": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                    },
+                                                    "receiver_account_id": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                    },
+                                                    "receiver_account_holder_name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "account_number": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1234567890
+                                                    },
+                                                    "account_type": {
+                                                        "type": "string",
+                                                        "example": "savings"
+                                                    },
+                                                    "currency_id": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                                                    },
+                                                    "balance": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1000.5
+                                                    },
+                                                    "total_deposits": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 5000
+                                                    },
+                                                    "total_withdrawals": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 3000
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-09-01T12:34:56Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-09-01T12:34:56Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failure"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 401
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -891,6 +1030,10 @@
         {
             "name": "Accounts",
             "description": "Accounts"
+        },
+        {
+            "name": "Transactions",
+            "description": "Transactions"
         }
     ]
 }

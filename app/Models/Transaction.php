@@ -11,6 +11,17 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->{$model->getKeyName()} = (string) Str::uuid();
+        });
+    }
+
     protected $fillable = [
         'sender_account_id',
         'receiver_account_id',
