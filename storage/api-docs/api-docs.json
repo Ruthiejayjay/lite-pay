@@ -1007,6 +1007,143 @@
                         "sanctum": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create a new transaction",
+                "description": "Process a transaction between the sender and receiver accounts.",
+                "operationId": "6ce7ed582b50f96d103c0c3a43129cef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "receiver_account_number",
+                                    "currency_code",
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "receiver_account_number": {
+                                        "description": "Receiver's account number",
+                                        "type": "integer",
+                                        "example": "1234567890"
+                                    },
+                                    "currency_code": {
+                                        "description": "Currency code for the transaction",
+                                        "type": "string",
+                                        "example": "USD"
+                                    },
+                                    "amount": {
+                                        "description": "Amount to transfer",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "100.50"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Transaction successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Transaction successful"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "uuid"
+                                                },
+                                                "sender_account_id": {
+                                                    "type": "string",
+                                                    "example": "uuid"
+                                                },
+                                                "receiver_account_id": {
+                                                    "type": "string",
+                                                    "example": "uuid"
+                                                },
+                                                "currency_id": {
+                                                    "type": "string",
+                                                    "example": "uuid"
+                                                },
+                                                "amount": {
+                                                    "type": "number",
+                                                    "example": "100.50"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "completed"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failure"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failure"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         }
     },
