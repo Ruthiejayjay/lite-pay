@@ -178,17 +178,147 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      */
+    /**
+     * @OA\Get(
+     *     path="/api/v1/transactions/{id}",
+     *     tags={"Transactions"},
+     *     summary="Get a transaction",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="The ID of the transaction to retrieve",
+     *         @OA\Schema(
+     *             type="string",
+     *             format="uuid",
+     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transaction retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Transaction Retrieved Successfully"),
+     *             @OA\Property(property="status_code", type="integer", example=200),
+     *             @OA\Property(
+     *                     @OA\Property(property="id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="sender_account_id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="receiver_account_id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="receiver_account_holder_name", type="string", example="John Doe"),
+     *                     @OA\Property(property="account_number", type="number", format="float", example=1234567890),
+     *                     @OA\Property(property="account_type", type="string", example="savings"),
+     *                     @OA\Property(property="currency_id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="balance", type="number", format="float", example=1000.50),
+     *                     @OA\Property(property="total_deposits", type="number", format="float", example=5000.00),
+     *                     @OA\Property(property="total_withdrawals", type="number", format="float", example=3000.00),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2023-09-01T12:34:56Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-09-01T12:34:56Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failure"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated"),
+     *             @OA\Property(property="status_code", type="integer", example=401)
+     *         )
+     *     )
+     * )
+     */
     public function show(Transaction $transaction)
     {
-        //
+        $userAccountIds = Auth::user()->accounts->pluck('id');
+
+        $transaction = Transaction::where(function ($query) use ($userAccountIds, $transaction) {
+            $query->where('id', $transaction->id)
+                ->where(function ($q) use ($userAccountIds) {
+                    $q->whereIn('sender_account_id', $userAccountIds)
+                        ->orWhereIn('receiver_account_id', $userAccountIds);
+                });
+        })->first();
+        if (!$transaction) {
+            return response()->json([
+                'status' => Status::FAILURE,
+                'message' => 'Transaction not Found',
+                'status_code' => Response::HTTP_NOT_FOUND,
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'status' => Status::SUCCESS,
+            'message' => 'Transaction Retrieved Successfully',
+            'status_code' => Response::HTTP_OK,
+            'data' => $transaction
+        ], Response::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      */
+        /**
+     * @OA\Delete(
+     *     path="/api/v1/transactions/{id}",
+     *     tags={"Transactions"},
+     *     summary="Delete a transaction",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="The ID of the transaction to delete",
+     *         @OA\Schema(
+     *             type="string",
+     *             format="uuid",
+     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Transaction Deleted Successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status_code", type="integer", example=204)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failure"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated"),
+     *             @OA\Property(property="status_code", type="integer", example=401)
+     *         )
+     *     )
+     * )
+     */
     public function destroy(Transaction $transaction)
     {
-        //
+        $userAccountIds = Auth::user()->accounts->pluck('id');
+
+        $transaction = Transaction::where(function ($query) use ($userAccountIds, $transaction) {
+            $query->where('id', $transaction->id)
+                ->where(function ($q) use ($userAccountIds) {
+                    $q->whereIn('sender_account_id', $userAccountIds)
+                        ->orWhereIn('receiver_account_id', $userAccountIds);
+                });
+        })->first();
+        if (!$transaction) {
+            return response()->json([
+                'status' => Status::FAILURE,
+                'message' => 'Transaction not Found',
+                'status_code' => Response::HTTP_NOT_FOUND,
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $transaction->delete();
+
+        return response()->json([
+            'status_code' => Response::HTTP_NO_CONTENT
+        ], Response::HTTP_NO_CONTENT);
     }
 
     /**
