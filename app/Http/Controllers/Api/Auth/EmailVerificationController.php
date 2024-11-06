@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EmailVerificationMail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
 
@@ -83,6 +86,8 @@ class EmailVerificationController extends Controller
             Carbon::now()->addMinutes(60),
             ['id' => $user->id, 'hash' => sha1($user->email)]
         );
+        Log::info($verificationUrl);
+        Mail::to($user->email)->queue(new EmailVerificationMail($user, $verificationUrl));
 
         return response()->json(['url' => $verificationUrl], 200);
     }
