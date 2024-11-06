@@ -2,23 +2,18 @@
 
 namespace App\Mail;
 
-use App\Http\Controllers\Api\Auth\EmailVerificationController;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
 
-class WelcomeEmail extends Mailable
+class EmailVerificationMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $user;
-
     protected $verificationUrl;
 
     /**
@@ -36,7 +31,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to Our Platform',
+            subject: 'Email Verification Mail',
         );
     }
 
@@ -46,14 +41,13 @@ class WelcomeEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.welcome',
+            markdown: 'emails.verify',
             with: [
                 'user' => $this->user,
                 'verificationUrl' => $this->verificationUrl,
             ],
         );
     }
-
 
     /**
      * Get the attachments for the message.
@@ -63,16 +57,5 @@ class WelcomeEmail extends Mailable
     public function attachments(): array
     {
         return [];
-    }
-
-    public function build()
-    {
-        Log::info('Sending WelcomeEmail to user: ' . $this->user->email);
-
-        return $this->markdown('emails.welcome')
-            ->with([
-                'user' => $this->user,
-                'verificationUrl' => $this->verificationUrl,
-            ]);
     }
 }

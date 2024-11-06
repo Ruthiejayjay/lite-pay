@@ -6,11 +6,15 @@ use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
+use App\Mail\Accounts\NewAccountMail as AccountsNewAccountMail;
+use App\Mail\Accounts\UpdateAccountMail;
+use App\Mail\NewAccountMail;
 use App\Models\Account;
 use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use OpenApi\Annotations as OA;
 
 class AccountsController extends Controller
@@ -146,6 +150,18 @@ class AccountsController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $existingAccount = Account::where('user_id', $user->id)
+            ->where('currency_id', $currency->id)
+            ->first();
+
+        if ($existingAccount) {
+            return response()->json([
+                'status' => Status::FAILURE,
+                'message' => 'You already have an account with this currency',
+                'status_code' => Response::HTTP_CONFLICT,
+            ], Response::HTTP_CONFLICT);
+        }
+
         $account = Account::create([
             'user_id' => $user->id,
             'account_holder_name' => $user->name,
@@ -156,6 +172,8 @@ class AccountsController extends Controller
             'total_withdrawals' => $totalWithdrawals,
             'currency_id' => $currency->id
         ]);
+
+        Mail::to($user->email)->queue(new AccountsNewAccountMail($user, $accountNumber, $currency->currency_code));
 
         return response()->json([
             'status' => Status::SUCCESS,
@@ -179,7 +197,6 @@ class AccountsController extends Controller
      *         @OA\Schema(
      *             type="string",
      *             format="uuid",
-     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
      *         )
      *     ),
      *     @OA\Response(
@@ -294,7 +311,8 @@ class AccountsController extends Controller
     public function update(UpdateAccountRequest $request, $id)
     {
         $validated = $request->validated();
-        $account = Account::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
+        $user = Auth::user();
+        $account = Account::where('user_id', $user->id)->where('id', $id)->firstOrFail();
 
         $amountToAdd = $validated['balance'];
 
@@ -302,7 +320,7 @@ class AccountsController extends Controller
             'balance' => $account->balance + $amountToAdd,
             'total_deposits' => $account->total_deposits + $amountToAdd
         ]);
-
+        Mail::to($user->email)->queue(new UpdateAccountMail($user, $account->account_number, $amountToAdd));
         return response()->json([
             'status' => Status::SUCCESS,
             'message' => 'Account Balance Updated Successfully',
@@ -324,8 +342,7 @@ class AccountsController extends Controller
      *         description="The ID of the account to delete",
      *         @OA\Schema(
      *             type="string",
-     *             format="uuid",
-     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *             format="uuid"
      *         )
      *     ),
      *     @OA\Response(

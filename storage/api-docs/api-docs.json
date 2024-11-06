@@ -627,8 +627,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "format": "uuid",
-                            "example": "c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -882,8 +881,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "format": "uuid",
-                            "example": "c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1218,8 +1216,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "format": "uuid",
-                            "example": "c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1356,8 +1353,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "format": "uuid",
-                            "example": "c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1425,8 +1421,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "format": "uuid",
-                            "example": "c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+                            "format": "uuid"
                         }
                     }
                 ],

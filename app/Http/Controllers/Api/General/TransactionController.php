@@ -190,8 +190,7 @@ class TransactionController extends Controller
      *         description="The ID of the transaction to retrieve",
      *         @OA\Schema(
      *             type="string",
-     *             format="uuid",
-     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *             format="uuid"
      *         )
      *     ),
      *     @OA\Response(
@@ -272,8 +271,7 @@ class TransactionController extends Controller
      *         description="The ID of the transaction to delete",
      *         @OA\Schema(
      *             type="string",
-     *             format="uuid",
-     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *             format="uuid"
      *         )
      *     ),
      *     @OA\Response(
@@ -333,8 +331,7 @@ class TransactionController extends Controller
      *         description="The ID of the currency to retrieve transactions",
      *         @OA\Schema(
      *             type="string",
-     *             format="uuid",
-     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *             format="uuid"
      *         )
      *     ),
      *     @OA\Response(

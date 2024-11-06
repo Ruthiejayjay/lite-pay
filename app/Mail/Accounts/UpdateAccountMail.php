@@ -1,33 +1,30 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Accounts;
 
-use App\Http\Controllers\Api\Auth\EmailVerificationController;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
 
-class WelcomeEmail extends Mailable
+class UpdateAccountMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-
-    public $user;
-
-    protected $verificationUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($user, $verificationUrl)
+    public $user;
+    public $accountNumber;
+    public $amount;
+
+   public function __construct($user, $accountNumber, $amount)
     {
         $this->user = $user;
-        $this->verificationUrl =  $verificationUrl;
+        $this->accountNumber = $accountNumber;
+        $this->amount = $amount;
     }
 
     /**
@@ -36,7 +33,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to Our Platform',
+            subject: 'Your account has been updated',
         );
     }
 
@@ -46,14 +43,14 @@ class WelcomeEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.welcome',
+            markdown: 'emails.accounts.update-account',
             with: [
                 'user' => $this->user,
-                'verificationUrl' => $this->verificationUrl,
+                'accountNumber' => $this->accountNumber,
+                'amount' => $this->amount,
             ],
         );
     }
-
 
     /**
      * Get the attachments for the message.
@@ -63,16 +60,5 @@ class WelcomeEmail extends Mailable
     public function attachments(): array
     {
         return [];
-    }
-
-    public function build()
-    {
-        Log::info('Sending WelcomeEmail to user: ' . $this->user->email);
-
-        return $this->markdown('emails.welcome')
-            ->with([
-                'user' => $this->user,
-                'verificationUrl' => $this->verificationUrl,
-            ]);
     }
 }
