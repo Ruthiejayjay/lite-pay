@@ -30,6 +30,7 @@ Route::prefix('/v1')->group(function () {
             return $request->user();
         });
         Route::resource('accounts', AccountsController::class)->except('edit');
-        Route::resource('transactions', TransactionController::class);
+        Route::resource('transactions', TransactionController::class)->except('edit', 'update');
+        Route::get('/transactions/currencies/{id}', [TransactionController::class, 'getTransactionsByCurrency']);
     });
 });

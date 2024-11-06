@@ -174,7 +174,6 @@ class TransactionController extends Controller
         }
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -260,7 +259,7 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-        /**
+    /**
      * @OA\Delete(
      *     path="/api/v1/transactions/{id}",
      *     tags={"Transactions"},
@@ -319,6 +318,88 @@ class TransactionController extends Controller
         return response()->json([
             'status_code' => Response::HTTP_NO_CONTENT
         ], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/transactions/currencies/{id}",
+     *     tags={"Transactions"},
+     *     summary="Get all transactions belonging to a currency",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="The ID of the currency to retrieve transactions",
+     *         @OA\Schema(
+     *             type="string",
+     *             format="uuid",
+     *             example="c9a1f8f5-1010-4d5a-88c4-f60c7b6537c2"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transactions retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Transactions Retrieved Successfully"),
+     *             @OA\Property(property="status_code", type="integer", example=200),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="sender_account_id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="receiver_account_id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="receiver_account_holder_name", type="string", example="John Doe"),
+     *                     @OA\Property(property="account_number", type="number", format="float", example=1234567890),
+     *                     @OA\Property(property="account_type", type="string", example="savings"),
+     *                     @OA\Property(property="currency_id", type="string", format="uuid", example="123e4567-e89b-12d3-a456-426614174000"),
+     *                     @OA\Property(property="balance", type="number", format="float", example=1000.50),
+     *                     @OA\Property(property="total_deposits", type="number", format="float", example=5000.00),
+     *                     @OA\Property(property="total_withdrawals", type="number", format="float", example=3000.00),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2023-09-01T12:34:56Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-09-01T12:34:56Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failure"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated"),
+     *             @OA\Property(property="status_code", type="integer", example=401)
+     *         )
+     *     )
+     * )
+     */
+    public function getTransactionsByCurrency($currencyId)
+    {
+        $userAccountIds = Auth::user()->accounts->pluck('id');
+        $transactions = Transaction::where('currency_id', $currencyId)
+            ->where(function ($query) use ($userAccountIds) {
+                $query->whereIn('sender_account_id', $userAccountIds)
+                    ->orWhereIn('receiver_account_id', $userAccountIds);
+            })
+            ->get();
+        if ($transactions->isEmpty()) {
+            return response()->json([
+                'status' => Status::SUCCESS,
+                'message' => 'No transactions found for this currency',
+                'status_code' => Response::HTTP_OK,
+                'data' => []
+            ], Response::HTTP_OK);
+        }
+        return response()->json([
+            'status' => Status::SUCCESS,
+            'message' => 'Transactions Retrieved Successfully for Currency',
+            'status_code' => Response::HTTP_OK,
+            'data' => $transactions
+        ], Response::HTTP_OK);
     }
 
     /**
