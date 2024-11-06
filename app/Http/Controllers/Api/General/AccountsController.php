@@ -136,6 +136,7 @@ class AccountsController extends Controller
 
         $currency = Currency::where('currency_code', $validated['currency_code'])->first();
         $accountNumber = mt_rand(1000000000, 9999999999);
+        $totalWithdrawals = $validated['total_withdrawals'] ?? 0;
 
         if (!$currency) {
             return response()->json([
@@ -152,7 +153,7 @@ class AccountsController extends Controller
             'account_type' => $validated['account_type'],
             'balance' => $validated['balance'],
             'total_deposits' => $validated['total_deposits'],
-            'total_withdrawals' => $validated['total_withdrawals'],
+            'total_withdrawals' => $totalWithdrawals,
             'currency_id' => $currency->id
         ]);
 
