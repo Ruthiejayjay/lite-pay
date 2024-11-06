@@ -13,22 +13,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
-class WelcomeEmail extends Mailable implements ShouldQueue
+class WelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
 
-    protected $emailVerificationController;
+    protected $verificationUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($user)
+    public function __construct($user, $verificationUrl)
     {
         $this->user = $user;
-        $this->emailVerificationController = new EmailVerificationController();
-        Log::info('WelcomeEmail instance created for user: ' . $this->user->email);
+        $this->verificationUrl =  $verificationUrl;
     }
 
     /**
@@ -37,7 +36,7 @@ class WelcomeEmail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to Our Platform', // Custom subject line
+            subject: 'Welcome to Our Platform',
         );
     }
 
@@ -46,15 +45,13 @@ class WelcomeEmail extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
-        $verificationUrl = $this->emailVerificationController->generateVerificationUrl($this->user);
-
         Log::info('Email content set for user: ' . $this->user->email);
 
         return new Content(
             markdown: 'emails.welcome',
             with: [
                 'user' => $this->user,
-                'verificationUrl' => $verificationUrl,
+                'verificationUrl' => $this->verificationUrl,
             ],
         );
     }
@@ -75,7 +72,9 @@ class WelcomeEmail extends Mailable implements ShouldQueue
         Log::info('Sending WelcomeEmail to user: ' . $this->user->email);
 
         return $this->markdown('emails.welcome')
-            ->with('user', $this->user)
-            ->with('verificationUrl', $this->verificationUrl($this->user));
+            ->with([
+                'user' => $this->user,
+                'verificationUrl' => $this->verificationUrl,
+            ]);
     }
 }

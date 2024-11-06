@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RegisterMail;
 use App\Mail\WelcomeEmail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
@@ -130,14 +133,12 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->string('password')),
         ]);
 
-        event(new Registered($user));
-        try {
-            Mail::to($user->email)->queue(new WelcomeEmail($user));
-            Log::info('Email queued successfully for user: ' . $user->email);
-        } catch(\Exception $e) {
-            Log::error('Failed to send email to user: ' . $user->email . '. Error: ' . $e->getMessage());
-        }
-
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+        Mail::to($user->email)->send(new WelcomeEmail($user, $verificationUrl));
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
