@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Account extends Model
+
+class Transaction extends Model
 {
     use HasFactory;
 
@@ -22,18 +23,12 @@ class Account extends Model
     }
 
     protected $fillable = [
-        'account_type',
-        'balance',
-        'total_deposits',
-        'total_withdrawal',
-        'user_id',
+        'sender_account_id',
+        'receiver_account_id',
+        'receiver_account_number',
+        'receiver_account_holder_name',
         'currency_id',
-        'account_holder_name',
-        'account_number'
+        'amount',
+        'status',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
