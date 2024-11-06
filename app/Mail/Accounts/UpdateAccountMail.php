@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Accounts;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewAccountMail extends Mailable implements ShouldQueue
+class UpdateAccountMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -18,13 +18,13 @@ class NewAccountMail extends Mailable implements ShouldQueue
      */
     public $user;
     public $accountNumber;
-    public $currency;
+    public $amount;
 
-    public function __construct($user, $accountNumber, $currency)
+   public function __construct($user, $accountNumber, $amount)
     {
         $this->user = $user;
         $this->accountNumber = $accountNumber;
-        $this->currency = $currency;
+        $this->amount = $amount;
     }
 
     /**
@@ -33,7 +33,7 @@ class NewAccountMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your New Account Has Been Created',
+            subject: 'Your account has been updated',
         );
     }
 
@@ -43,11 +43,11 @@ class NewAccountMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.accounts.new-account',
+            markdown: 'emails.accounts.update-account',
             with: [
                 'user' => $this->user,
                 'accountNumber' => $this->accountNumber,
-                'currency' => $this->currency,
+                'amount' => $this->amount,
             ],
         );
     }
