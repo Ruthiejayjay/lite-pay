@@ -6,11 +6,13 @@ use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
+use App\Mail\NewAccountMail;
 use App\Models\Account;
 use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use OpenApi\Annotations as OA;
 
 class AccountsController extends Controller
@@ -145,6 +147,18 @@ class AccountsController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $existingAccount = Account::where('user_id', $user->id)
+            ->where('currency_id', $currency->id)
+            ->first();
+
+        if ($existingAccount) {
+            return response()->json([
+                'status' => Status::FAILURE,
+                'message' => 'You already have an account with this currency',
+                'status_code' => Response::HTTP_CONFLICT,
+            ], Response::HTTP_CONFLICT);
+        }
+
         $account = Account::create([
             'user_id' => $user->id,
             'account_holder_name' => $user->name,
@@ -155,6 +169,8 @@ class AccountsController extends Controller
             'total_withdrawals' => $validated['total_withdrawals'],
             'currency_id' => $currency->id
         ]);
+
+        Mail::to($user->email)->queue(new NewAccountMail($user, $accountNumber, $currency->currency_code));
 
         return response()->json([
             'status' => Status::SUCCESS,
