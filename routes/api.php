@@ -29,6 +29,7 @@ Route::prefix('/v1')->group(function () {
         Route::get('/user', function (Request $request) {
             return $request->user();
         });
+        Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
         Route::resource('accounts', AccountsController::class)->except('edit');
         Route::resource('transactions', TransactionController::class)->except('edit', 'update');
         Route::get('/transactions/currencies/{id}', [TransactionController::class, 'getTransactionsByCurrency']);

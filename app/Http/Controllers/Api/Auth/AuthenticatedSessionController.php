@@ -95,4 +95,47 @@ class AuthenticatedSessionController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Destroy an authenticated session.
+     */
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/logout",
+     *     operationId="logout",
+     *     tags={"Authentication"},
+     *     summary="Log out the authenticated user",
+     *     description="Revokes the authenticated user's tokens and invalidates the session.",
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status_code", type="integer", example=200),
+     *             @OA\Property(property="message", type="string", example="Logout successful")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status_code", type="integer", example=401),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+        $user->tokens()->delete();
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
+
+        return response()->json([
+            'status_code' => Response::HTTP_OK,
+            'message' => 'Logout successful'
+        ]);
+    }
 }
