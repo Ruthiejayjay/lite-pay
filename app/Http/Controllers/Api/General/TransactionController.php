@@ -8,6 +8,8 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Http\Controllers\Controller;
 use App\Mail\Transactions\InsufficientBalanceEmail;
+use App\Mail\Transactions\TransactionSuccessfulReceiverEmail;
+use App\Mail\Transactions\TransactionSuccessfulSenderEmail;
 use App\Models\Account;
 use App\Models\Currency;
 use Illuminate\Http\Response;
@@ -169,6 +171,8 @@ class TransactionController extends Controller
 
             DB::commit();
 
+            Mail::to($senderAccount->user->email)->queue(new TransactionSuccessfulSenderEmail($senderAccount, $amount));
+            Mail::to($receiverAccount->user->email)->queue(new TransactionSuccessfulReceiverEmail($receiverAccount, $amount));
             return $this->successResponse('Transaction successful', $transaction, Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
