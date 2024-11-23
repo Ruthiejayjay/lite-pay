@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\General;
 
 use App\Enums\Status;
+use App\Exceptions\InsufficientBalanceException;
 use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
@@ -174,6 +175,9 @@ class TransactionController extends Controller
             Mail::to($senderAccount->user->email)->queue(new TransactionSuccessfulSenderEmail($senderAccount, $amount));
             Mail::to($receiverAccount->user->email)->queue(new TransactionSuccessfulReceiverEmail($receiverAccount, $amount));
             return $this->successResponse('Transaction successful', $transaction, Response::HTTP_CREATED);
+        } catch (InsufficientBalanceException $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), null, $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Transaction failed', $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -448,7 +452,7 @@ class TransactionController extends Controller
     {
         if ($senderAccount->balance < $amount) {
             Mail::to($senderAccount->user->email)->send(new InsufficientBalanceEmail($senderAccount, $amount));
-            throw new \Exception('Insufficient balance');
+            throw new InsufficientBalanceException();
         }
     }
 
