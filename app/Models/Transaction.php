@@ -31,4 +31,9 @@ class Transaction extends Model
         'amount',
         'status',
     ];
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }
