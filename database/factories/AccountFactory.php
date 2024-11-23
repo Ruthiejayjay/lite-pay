@@ -22,7 +22,7 @@ class AccountFactory extends Factory
             'user_id' => User::factory(),
             'currency_id' => Currency::factory(),
             'account_holder_name' => $this->faker->name(),
-            'account_number' => $this->faker->unique()->numerify('##########'),
+           'account_number' => $this->faker->unique()->numberBetween(1000000000, 9999999999),
             'account_type' => $this->faker->randomElement(['savings', 'checking']),
             'balance' => $this->faker->randomFloat(2, 0, 1000),
             'total_deposits' => 0,
