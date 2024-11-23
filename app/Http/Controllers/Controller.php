@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Routing\Controller as BaseController;
 use OpenApi\Annotations as OA;
 
 /**
@@ -31,7 +34,7 @@ use OpenApi\Annotations as OA;
  *    description="Enter your Bearer token in the format **Bearer {token}**"
  * ),
  */
-class Controller // Changed from abstract to concrete class
+class Controller extends BaseController
 {
-    //
+    use AuthorizesRequests, DispatchesJobs;
 }

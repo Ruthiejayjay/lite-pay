@@ -11,6 +11,7 @@ use App\Mail\Accounts\UpdateAccountMail;
 use App\Mail\NewAccountMail;
 use App\Models\Account;
 use App\Models\Currency;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -171,6 +172,13 @@ class AccountsController extends Controller
             'total_deposits' => $validated['total_deposits'],
             'total_withdrawals' => $totalWithdrawals,
             'currency_id' => $currency->id
+        ]);
+
+        Notification::create([
+            'user_id' => $user->id,
+            'account_id' => $account->id,
+            'type' => 'account_created',
+            'message' => "Your {$currency->currency_code} account has been created successfully with account number {$account->account_number}.",
         ]);
 
         Mail::to($user->email)->queue(new AccountsNewAccountMail($user, $accountNumber, $currency->currency_code));

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\RegisterMail;
 use App\Mail\WelcomeEmail;
+use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
@@ -131,6 +132,18 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->string('password')),
+        ]);
+
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'signup',
+            'message' => "Welcome, {$user->name}! Thank you for Signing up"
+        ]);
+
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'Verify Email',
+            'message' => "Please verify your email. Click button below to Verify your email"
         ]);
 
         $verificationUrl = URL::temporarySignedRoute(
