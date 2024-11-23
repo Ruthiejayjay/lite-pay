@@ -13,6 +13,7 @@ use App\Mail\Transactions\TransactionSuccessfulReceiverEmail;
 use App\Mail\Transactions\TransactionSuccessfulSenderEmail;
 use App\Models\Account;
 use App\Models\Currency;
+use App\Models\Notification;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -169,8 +170,21 @@ class TransactionController extends Controller
 
             $transaction = $this->createTransaction($senderAccount, $receiverAccount, $selectedCurrency->id, $amount);
 
-
             DB::commit();
+
+            Notification::create([
+                'user_id' => $senderAccount->user_id,
+                'transaction_id' => $transaction->id,
+                'type' => 'transaction',
+                'message' => "You sent {$transaction->amount} to {$receiverAccount->account_holder_name}.",
+            ]);
+
+            Notification::create([
+                'user_id' => $receiverAccount->user_id,
+                'transaction_id' => $transaction->id,
+                'type' => 'transaction',
+                'message' => "You received {$transaction->amount} from {$senderAccount->account_holder_name}.",
+            ]);
 
             Mail::to($senderAccount->user->email)->queue(new TransactionSuccessfulSenderEmail($senderAccount, $amount));
             Mail::to($receiverAccount->user->email)->queue(new TransactionSuccessfulReceiverEmail($receiverAccount, $amount));
