@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\General;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
@@ -113,13 +114,20 @@ class NotificationController extends Controller
      */
     public function markAsRead($id)
     {
-        $notification = Notification::findOrFail($id);
+        try {
+            $notification = Notification::findOrFail($id);
 
-        // Check authorization
-        $this->authorize('update', $notification);
+            // Check authorization
+            $this->authorize('update', $notification);
 
-        $notification->update(['is_read' => true]);
+            $notification->update(['is_read' => true]);
 
-        return response()->json(['status' => 'success', 'message' => 'Notification marked as read.']);
+            return response()->json(['status' => 'success', 'message' => 'Notification marked as read.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'failure',
+                'message' => 'Notification not found.',
+            ], 404);
+        }
     }
 }
