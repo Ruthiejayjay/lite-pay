@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('account_id')->nullable()->constrained('accounts')->onDelete('cascade');
             $table->foreignUuid('transaction_id')->nullable()->constrained('transactions')->onDelete('cascade');
-            $table->string('type');
+            $table->string('type')->default('general');
+            $table->string('title');
             $table->text('message');
             $table->boolean('is_read')->default(false);
             $table->timestamps();
