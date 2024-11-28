@@ -22,7 +22,7 @@ class NotificationFactory extends Factory
         return [
             'user_id' => User::factory(),
             'type' => 'general',
-            // 'title' => $this->faker->sentence,
+            'title' => $this->faker->sentence,
             'message' => $this->faker->paragraph,
             'is_read' => false,
         ];

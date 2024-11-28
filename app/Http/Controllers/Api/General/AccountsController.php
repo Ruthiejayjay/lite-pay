@@ -178,6 +178,7 @@ class AccountsController extends Controller
             'user_id' => $user->id,
             'account_id' => $account->id,
             'type' => 'account_created',
+            'title' => 'New Account',
             'message' => "Your {$currency->currency_code} account has been created successfully with account number {$account->account_number}.",
         ]);
 

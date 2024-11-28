@@ -26,6 +26,7 @@ class Notification extends Model
         'account_id',
         'transaction_id',
         'type',
+        'title',
         'message',
         'is_read',
     ];

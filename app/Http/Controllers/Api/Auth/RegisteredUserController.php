@@ -137,12 +137,14 @@ class RegisteredUserController extends Controller
         Notification::create([
             'user_id' => $user->id,
             'type' => 'signup',
+            'title' => 'Welcome Email',
             'message' => "Welcome, {$user->name}! Thank you for Signing up"
         ]);
 
         Notification::create([
             'user_id' => $user->id,
-            'type' => 'Verify Email',
+            'type' => 'verified',
+            'title' => 'Verify Email',
             'message' => "Please verify your email. Click button below to Verify your email"
         ]);
 

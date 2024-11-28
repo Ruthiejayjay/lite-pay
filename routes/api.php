@@ -26,7 +26,7 @@ Route::prefix('/v1')->group(function () {
             ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
     });
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum', 'verified')->group(function () {
         Route::get('/user', function (Request $request) {
             return $request->user();
         });

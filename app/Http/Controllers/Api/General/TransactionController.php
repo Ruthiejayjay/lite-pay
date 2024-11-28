@@ -176,6 +176,7 @@ class TransactionController extends Controller
                 'user_id' => $senderAccount->user_id,
                 'transaction_id' => $transaction->id,
                 'type' => 'transaction',
+                'title' => 'Outgoing Transaction',
                 'message' => "You sent {$transaction->amount} to {$receiverAccount->account_holder_name}.",
             ]);
 
@@ -183,6 +184,7 @@ class TransactionController extends Controller
                 'user_id' => $receiverAccount->user_id,
                 'transaction_id' => $transaction->id,
                 'type' => 'transaction',
+                'title' => 'Incoming Transaction',
                 'message' => "You received {$transaction->amount} from {$senderAccount->account_holder_name}.",
             ]);
 
