@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
+use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\General\AccountsController;
 use App\Http\Controllers\Api\General\NotificationController;
 use App\Http\Controllers\Api\General\TransactionController;
@@ -22,6 +23,7 @@ Route::prefix('/v1')->group(function () {
 
     Route::prefix('/auth')->group(function () {
         Route::post('/generate-verification-url', [EmailVerificationController::class, 'generateVerificationUrl'])->name('verification.getVerificationUrl');
+        Route::post('/reset-password-link', [ResetPasswordController::class, 'resetPasswordLink'])->name('resetPasswordLink');
         Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
