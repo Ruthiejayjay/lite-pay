@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\General\AccountsController;
 use App\Http\Controllers\Api\General\NotificationController;
 use App\Http\Controllers\Api\General\TransactionController;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,14 @@ Route::prefix('/v1')->group(function () {
 
     Route::prefix('/auth')->group(function () {
         Route::post('/generate-verification-url', [EmailVerificationController::class, 'generateVerificationUrl'])->name('verification.getVerificationUrl');
-        Route::post('/reset-password-link', [ResetPasswordController::class, 'resetPasswordLink'])->name('resetPasswordLink');
+        Route::post('/reset-password-link', [ResetPasswordController::class, 'sendResetLink']);
+        Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']);
+        Route::get('/reset-password/{token}', function ($token) {
+            return response()->json([
+                'message' => 'Password reset link placeholder.',
+                'token' => $token,
+            ]);
+        })->name('password.reset');
         Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
