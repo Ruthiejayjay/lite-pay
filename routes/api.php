@@ -38,6 +38,8 @@ Route::prefix('/v1')->group(function () {
             ->name('verification.verify');
         Route::post('/password/send-verification-code', [ChangePasswordController::class, 'sendVerificationCode'])
             ->middleware(['auth:sanctum']);
+        Route::post('/password/change', [ChangePasswordController::class, 'changePassword'])
+            ->middleware('auth:sanctum')->name('password.change');
     });
     Route::middleware('auth:sanctum', 'verified')->group(function () {
         Route::get('/user', function (Request $request) {
