@@ -37,7 +37,7 @@ class ChangePasswordController extends Controller
      *         response=200,
      *         description="Verification code sent successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="success", type="boolean", example=success),
      *             @OA\Property(property="message", type="string", example="A verification code has been sent to your email address.")
      *         )
      *     ),
@@ -89,51 +89,51 @@ class ChangePasswordController extends Controller
     }
 
     /**
- * @OA\Post(
- *     path="/api/v1/auth/password/change",
- *     summary="Change Password",
- *     description="Change the user's password after verifying the provided verification code.",
- *     tags={"Password Management"},
- *     security={{"sanctum": {}}},
- *
- *     @OA\RequestBody(
- *         required=true,
- *         description="Request payload for changing the password.",
- *         @OA\JsonContent(
- *             required={"verification_code", "new_password", "new_password_confirmation"},
- *             @OA\Property(property="verification_code", type="string", example="ABC123", description="The verification code sent to the user's email."),
- *             @OA\Property(property="new_password", type="string", format="password", example="newSecurePassword123", description="The new password."),
- *             @OA\Property(property="new_password_confirmation", type="string", format="password", example="newSecurePassword123", description="Confirmation of the new password.")
- *         )
- *     ),
- *
- *     @OA\Response(
- *         response=201,
- *         description="Password changed successfully.",
- *         @OA\JsonContent(
- *             @OA\Property(property="success", type="string", example="success", description="Status of the request."),
- *             @OA\Property(property="message", type="string", example="Your password has been changed successfully.", description="Success message."),
- *             @OA\Property(property="status_code", type="integer", example=201, description="HTTP status code.")
- *         )
- *     ),
- *
- *     @OA\Response(
- *         response=400,
- *         description="Invalid or expired verification code.",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Invalid or expired verification code.", description="Error message.")
- *         )
- *     ),
- *
- *     @OA\Response(
- *         response=401,
- *         description="Unauthorized. User not authenticated.",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Unauthenticated.", description="Authentication error message.")
- *         )
- *     )
- * )
- */
+     * @OA\Post(
+     *     path="/api/v1/auth/password/change",
+     *     summary="Change Password",
+     *     description="Change the user's password after verifying the provided verification code.",
+     *     tags={"Password Management"},
+     *     security={{"sanctum": {}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Request payload for changing the password.",
+     *         @OA\JsonContent(
+     *             required={"verification_code", "new_password", "new_password_confirmation"},
+     *             @OA\Property(property="verification_code", type="string", example="ABC123", description="The verification code sent to the user's email."),
+     *             @OA\Property(property="new_password", type="string", format="password", example="newSecurePassword123", description="The new password."),
+     *             @OA\Property(property="new_password_confirmation", type="string", format="password", example="newSecurePassword123", description="Confirmation of the new password.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=201,
+     *         description="Password changed successfully.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="string", example="success", description="Status of the request."),
+     *             @OA\Property(property="message", type="string", example="Your password has been changed successfully.", description="Success message."),
+     *             @OA\Property(property="status_code", type="integer", example=201, description="HTTP status code.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid or expired verification code.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Invalid or expired verification code.", description="Error message.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized. User not authenticated.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.", description="Authentication error message.")
+     *         )
+     *     )
+     * )
+     */
 
     public function changePassword(Request $request)
     {
