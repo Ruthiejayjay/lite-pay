@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Api\Auth\ChangePasswordController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
@@ -35,6 +36,8 @@ Route::prefix('/v1')->group(function () {
         Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
+        Route::post('/password/send-verification-code', [ChangePasswordController::class, 'sendVerificationCode'])
+            ->middleware(['auth:sanctum']);
     });
     Route::middleware('auth:sanctum', 'verified')->group(function () {
         Route::get('/user', function (Request $request) {
