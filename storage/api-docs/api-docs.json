@@ -122,6 +122,221 @@
                 ]
             }
         },
+        "/api/v1/auth/password/send-verification-code": {
+            "post": {
+                "tags": [
+                    "Password Management"
+                ],
+                "summary": "Send a password change verification code",
+                "description": "Generates and sends a verification code to the authenticated user's email for password change verification.",
+                "operationId": "6a306640acc25e85753499207dc5f2b0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "The email address of the authenticated user requesting to change their password.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verification code sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "A verification code has been sent to your email address."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized access."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The email field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/password/change": {
+            "post": {
+                "tags": [
+                    "Password Management"
+                ],
+                "summary": "Change Password",
+                "description": "Change the user's password after verifying the provided verification code.",
+                "operationId": "06960cfd861d1a70beabe77e19addb59",
+                "requestBody": {
+                    "description": "Request payload for changing the password.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "verification_code",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "verification_code": {
+                                        "description": "The verification code sent to the user's email.",
+                                        "type": "string",
+                                        "example": "ABC123"
+                                    },
+                                    "new_password": {
+                                        "description": "The new password.",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newSecurePassword123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "description": "Confirmation of the new password.",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newSecurePassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Password changed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Status of the request.",
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Success message.",
+                                            "type": "string",
+                                            "example": "Your password has been changed successfully."
+                                        },
+                                        "status_code": {
+                                            "description": "HTTP status code.",
+                                            "type": "integer",
+                                            "example": 201
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid or expired verification code.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Error message.",
+                                            "type": "string",
+                                            "example": "Invalid or expired verification code."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. User not authenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Authentication error message.",
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/auth/generate-verification-url": {
             "post": {
                 "tags": [
@@ -1946,6 +2161,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Password Management",
+            "description": "Password Management"
         },
         {
             "name": "Accounts",
