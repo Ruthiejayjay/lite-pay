@@ -37,7 +37,7 @@ Route::prefix('/v1')->group(function () {
             ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
         Route::post('/password/send-verification-code', [ChangePasswordController::class, 'sendVerificationCode'])
-            ->middleware(['auth:sanctum']);
+            ->middleware('auth:sanctum')->name('password.verify');
         Route::post('/password/change', [ChangePasswordController::class, 'changePassword'])
             ->middleware('auth:sanctum')->name('password.change');
     });

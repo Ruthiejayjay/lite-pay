@@ -162,6 +162,6 @@ class ChangePasswordController extends Controller
             'success' => Status::SUCCESS,
             'message' => 'Your password has been changed successfully.',
             'status_code' => Response::HTTP_CREATED
-        ]);
+        ], Response::HTTP_CREATED);
     }
 }
