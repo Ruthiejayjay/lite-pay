@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\Auth\ChangePasswordController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
+use App\Http\Controllers\Api\Auth\GoogleController;
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\General\AccountsController;
@@ -40,6 +41,8 @@ Route::prefix('/v1')->group(function () {
             ->middleware('auth:sanctum')->name('password.verify');
         Route::post('/password/change', [ChangePasswordController::class, 'changePassword'])
             ->middleware('auth:sanctum')->name('password.change');
+        Route::get('/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+        Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
     });
     Route::middleware('auth:sanctum', 'verified')->group(function () {
         Route::get('/user', function (Request $request) {
